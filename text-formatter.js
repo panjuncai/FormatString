@@ -3,38 +3,17 @@ const path = require('path');
 
 /**
  * 文本格式化脚本
- * 功能：将折行的句子合并到一行，删除空行
+ * 功能：将所有内容合并为一行
  */
 
 function formatText(inputText) {
-    // 按行分割文本
+    // 简单粗暴：把所有非空行合并为一行
     const lines = inputText.split('\n');
-    const result = [];
-    let currentParagraph = [];
+    const nonEmptyLines = lines
+        .map(line => line.trim())
+        .filter(line => line !== '');
     
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        
-        // 如果是空行，结束当前段落
-        if (line === '') {
-            if (currentParagraph.length > 0) {
-                // 将当前段落的所有行合并为一行
-                result.push(currentParagraph.join(' '));
-                currentParagraph = [];
-            }
-            // 删除空行，不添加到结果中
-        } else {
-            // 非空行，添加到当前段落
-            currentParagraph.push(line);
-        }
-    }
-    
-    // 处理最后一个段落（如果文件末尾没有空行）
-    if (currentParagraph.length > 0) {
-        result.push(currentParagraph.join(' '));
-    }
-    
-    return result.join('\n');
+    return nonEmptyLines.join(' ');
 }
 
 function processFile(inputPath, outputPath = null) {
@@ -83,8 +62,8 @@ if (require.main === module) {
   node text-formatter.js novel.txt formatted_novel.txt
 
 功能:
-  - 将折行的句子合并到一行
-  - 删除空行，使文本更紧凑
+  - 将所有内容合并为一行
+  - 删除所有空行和换行符
   - 自动生成输出文件名（如果未指定）
         `);
         process.exit(0);
